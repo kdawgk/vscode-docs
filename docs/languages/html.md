@@ -1,178 +1,175 @@
----
-Order: 4
-Area: languages
-TOCTitle: HTML
-ContentId: 43095EAF-4B93-407C-A6F9-6DB173D79088
-PageTitle: HTML Programming with Visual Studio Code
-DateApproved: 12/7/2023
-MetaDescription: Get the best out of Visual Studio Code for HTML development
----
-# HTML in Visual Studio Code
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <style>
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
 
-Visual Studio Code provides basic support for HTML programming out of the box. There is syntax highlighting, smart completions with IntelliSense, and customizable formatting. VS Code also includes great Emmet support.
+  body {
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  canvas {
+    border: 1px solid white;
+  }
+  </style>
+</head>
+<body>
+<canvas width="400" height="400" id="game"></canvas>
+<script>
+var canvas = document.getElementById('game');
+var context = canvas.getContext('2d');
 
-## IntelliSense
+var grid = 16;
+var count = 0;
 
-As you type in HTML, we offer suggestions via HTML IntelliSense. In the image below, you can see a suggested HTML element closure `</div>` as well as a context specific list of suggested elements.
+var snake = {
+  x: 160,
+  y: 160,
 
-![HTML IntelliSense](images/html/htmlintellisense.png)
+  // snake velocity. moves one grid length every frame in either the x or y direction
+  dx: grid,
+  dy: 0,
 
-Document symbols are also available for HTML, allowing you to quickly navigate to DOM nodes by id and class name.
+  // keep track of all grids the snake body occupies
+  cells: [],
 
-You can also work with embedded CSS and JavaScript. However, note that script and style includes from other files are not followed, the language support only looks at the content of the HTML file.
+  // length of the snake. grows when eating an apple
+  maxCells: 4
+};
+var apple = {
+  x: 320,
+  y: 320
+};
 
-You can trigger suggestions at any time by pressing `kb(editor.action.triggerSuggest)`.
-
-You can also control which built-in code completion providers are active. Override these in your user or workspace [settings](/docs/getstarted/settings.md) if you prefer not to see the corresponding suggestions.
-
-```json
-// Configures if the built-in HTML language suggests HTML5 tags, properties and values.
-"html.suggest.html5": true
-```
-
-## Close tags
-
-Tag elements are automatically closed when `>` of the opening tag is typed.
-
-![HTML Close1](images/html/auto-close1.gif)
-
-The matching closing tag is inserted when `/` of the closing tag is entered.
-
-![HTML Close2](images/html/auto-close2.gif)
-
-You can turn off autoclosing tags with the following [setting](/docs/getstarted/settings.md):
-
-```json
-"html.autoClosingTags": false
-```
-
-## Auto update tags
-
-When modifying a tag, the linked editing feature automatically updates the matching closing tag. The feature is optional and can be enabled by setting:
-
-```json
-"editor.linkedEditing": true
-```
-
-## Color picker
-
-The VS Code color picker UI is now available in HTML style sections.
-
-![color picker in HTML](images/html/color-picker-html.png)
-
-It supports configuration of hue, saturation and opacity for the color that is picked up from the editor. It also provides the ability to trigger between different color modes by clicking on the color string at the top of the picker. The picker appears on a hover when you are over a color definition.
-
-## Hover
-
-Move the mouse over HTML tags or embedded styles and JavaScript to get more information on the symbol under the cursor.
-
-![HTML Hover](images/html/htmlhover.png)
-
-## Validation
-
-The HTML language support performs validation on all embedded JavaScript and CSS.
-
-You can turn that validation off with the following settings:
-
-```json
-// Configures if the built-in HTML language support validates embedded scripts.
-"html.validate.scripts": true,
-
-// Configures if the built-in HTML language support validates embedded styles.
-"html.validate.styles": true
-```
-
-## Folding
-
-You can fold regions of source code using the folding icons on the gutter between line numbers and line start. Folding regions are available for all HTML elements for multiline comments in the source code.
-
-Additionally you can use the following region markers to define a folding region:
-`<!-- #region -->` and `<!-- endregion -->`
-
-If you prefer to switch to indentation based folding for HTML use:
-
-```json
-"[html]": {
-    "editor.foldingStrategy": "indentation"
-},
-```
-
-## Formatting
-
-To improve the formatting of your HTML source code, you can use the **Format Document** command `kb(editor.action.formatDocument)` to format the entire file or **Format Selection** `kb(editor.action.formatSelection)` to just format the selected text.
-
-The HTML formatter is based on [js-beautify](https://www.npmjs.com/package/js-beautify). The formatting options offered by that library are surfaced in the VS Code [settings](/docs/getstarted/settings.md):
-
-* `html.format.wrapLineLength`: Maximum amount of characters per line.
-* `html.format.unformatted`: List of tags that shouldn't be reformatted.
-* `html.format.contentUnformatted`: List of tags, comma separated, where the content shouldn't be reformatted.
-* `html.format.extraLiners`: List of tags that should have an extra newline before them.
-* `html.format.preserveNewLines`: Whether existing line breaks before elements should be preserved.
-* `html.format.maxPreserveNewLines`: Maximum number of line breaks to be preserved in one chunk.
-* `html.format.indentInnerHtml`: Indent `<head>` and `<body>` sections.
-* `html.format.wrapAttributes`: Wrapping strategy for attributes:
-  * `auto`: Wrap when the line length is exceeded
-  * `force`: Wrap all attributes, except first
-  * `force-aligned`: Wrap all attributes, except first, and align attributes
-  * `force-expand-multiline`: Wrap all attributes
-  * `aligned-multiple`: Wrap when line length is exceeded, align attributes vertically
-  * `preserve`: Preserve wrapping of attributes
-  * `preserve-aligned`: Preserve wrapping of attributes but align
-* `html.format.wrapAttributesIndentSize`: Alignment size when using `force aligned` and `aligned multiple` in `html.format.wrapAttributes` or `null` to use the default indent size.
-* `html.format.templating`: Honor django, erb, handlebars and php templating language tags.
-* `html.format.unformattedContentDelimiter`: Keep text content together between this string.
-
->**Tip:** The formatter doesn't format the tags listed in the `html.format.unformatted` and `html.format.contentUnformatted` settings. Embedded JavaScript is formatted unless 'script' tags are excluded.
-
-The Marketplace has several alternative formatters to choose from. If you want to use a different formatter, define
-`"html.format.enable": false` in your settings to turn off the built-in formatter.
-
-## Emmet snippets
-
-VS Code supports [Emmet snippet](https://emmet.io/) expansion. Emmet abbreviations are listed along with other suggestions and snippets in the editor auto-completion list.
-
-![Emmet HTML support built-in](images/html/emmetsnippet.gif)
-
->**Tip:** See the HTML section of the [Emmet cheat sheet](https://docs.emmet.io/cheat-sheet) for valid abbreviations.
-
-If you'd like to use HTML Emmet abbreviations with other languages, you can associate one of the Emmet modes (such as `css`, `html`) with other languages with the `emmet.includeLanguages` [setting](/docs/getstarted/settings.md). The setting takes a [language identifier](/docs/languages/overview.md#language-identifier) and associates it with the language ID of an Emmet supported mode.
-
-For example, to use Emmet HTML abbreviations inside JavaScript:
-
-```json
-{
-    "emmet.includeLanguages": {
-        "javascript": "html"
-     }
+// get random whole numbers in a specific range
+// @see https://stackoverflow.com/a/1527820/2124254
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
 }
-```
 
-We also support [User Defined Snippets](/docs/editor/userdefinedsnippets.md).
+// game loop
+function loop() {
+  requestAnimationFrame(loop);
 
-## HTML custom data
+  // slow game loop to 15 fps instead of 60 (60/15 = 4)
+  if (++count < 4) {
+    return;
+  }
 
-You can extend VS Code's HTML support through a declarative [custom data format](https://github.com/microsoft/vscode-html-languageservice/blob/main/docs/customData.md). By setting `html.customData` to a list of JSON files following the custom data format, you can enhance VS Code's understanding of new HTML tags, attributes and attribute values. VS Code will then offer language support such as completion & hover information for the provided tags, attributes and attribute values.
+  count = 0;
+  context.clearRect(0,0,canvas.width,canvas.height);
 
-You can read more about using custom data in the [vscode-custom-data](https://github.com/microsoft/vscode-custom-data) repository.
+  // move snake by it's velocity
+  snake.x += snake.dx;
+  snake.y += snake.dy;
 
-## HTML extensions
+  // wrap snake position horizontally on edge of screen
+  if (snake.x < 0) {
+    snake.x = canvas.width - grid;
+  }
+  else if (snake.x >= canvas.width) {
+    snake.x = 0;
+  }
 
-Install an extension to add more functionality. Go to the **Extensions** view (`kb(workbench.view.extensions)`) and type 'html' to see a list of relevant extensions to help with creating and editing HTML.
+  // wrap snake position vertically on edge of screen
+  if (snake.y < 0) {
+    snake.y = canvas.height - grid;
+  }
+  else if (snake.y >= canvas.height) {
+    snake.y = 0;
+  }
 
-<div class="marketplace-extensions-html-curated"></div>
+  // keep track of where snake has been. front of the array is always the head
+  snake.cells.unshift({x: snake.x, y: snake.y});
 
-> Tip: Click on an extension tile above to read the description and reviews to decide which extension is best for you. See more in the [Marketplace](https://marketplace.visualstudio.com).
+  // remove cells as we move away from them
+  if (snake.cells.length > snake.maxCells) {
+    snake.cells.pop();
+  }
 
-## Next steps
+  // draw apple
+  context.fillStyle = 'red';
+  context.fillRect(apple.x, apple.y, grid-1, grid-1);
 
-Read on to find out about:
+  // draw snake one cell at a time
+  context.fillStyle = 'green';
+  snake.cells.forEach(function(cell, index) {
 
-* [CSS, SCSS, and Less](/docs/languages/css.md) - VS Code has first class support for CSS including Less and SCSS.
-* [Emmet](/docs/editor/emmet.md) - Learn about VS Code's powerful built-in Emmet support.
-* [Emmet official documentation](https://docs.emmet.io/) - Emmet, the essential toolkit for web-developers.
+    // drawing 1 px smaller than the grid creates a grid effect in the snake body so you can see how long it is
+    context.fillRect(cell.x, cell.y, grid-1, grid-1);
 
-## Common questions
+    // snake ate apple
+    if (cell.x === apple.x && cell.y === apple.y) {
+      snake.maxCells++;
 
-### Does VS Code have HTML preview?
+      // canvas is 400x400 which is 25x25 grids
+      apple.x = getRandomInt(0, 25) * grid;
+      apple.y = getRandomInt(0, 25) * grid;
+    }
 
-No, VS Code doesn't have built-in support for HTML preview but there are extensions available in the VS Code [Marketplace](https://marketplace.visualstudio.com/vscode). Open the **Extensions** view (`kb(workbench.view.extensions)`) and search on 'live preview' or 'html preview' to see a list of available HTML preview extensions.
+    // check collision with all cells after this one (modified bubble sort)
+    for (var i = index + 1; i < snake.cells.length; i++) {
+
+      // snake occupies same space as a body part. reset game
+      if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
+        snake.x = 160;
+        snake.y = 160;
+        snake.cells = [];
+        snake.maxCells = 4;
+        snake.dx = grid;
+        snake.dy = 0;
+
+        apple.x = getRandomInt(0, 25) * grid;
+        apple.y = getRandomInt(0, 25) * grid;
+      }
+    }
+  });
+}
+
+// listen to keyboard events to move the snake
+document.addEventListener('keydown', function(e) {
+  // prevent snake from backtracking on itself by checking that it's
+  // not already moving on the same axis (pressing left while moving
+  // left won't do anything, and pressing right while moving left
+  // shouldn't let you collide with your own body)
+
+  // left arrow key
+  if (e.which === 37 && snake.dx === 0) {
+    snake.dx = -grid;
+    snake.dy = 0;
+  }
+  // up arrow key
+  else if (e.which === 38 && snake.dy === 0) {
+    snake.dy = -grid;
+    snake.dx = 0;
+  }
+  // right arrow key
+  else if (e.which === 39 && snake.dx === 0) {
+    snake.dx = grid;
+    snake.dy = 0;
+  }
+  // down arrow key
+  else if (e.which === 40 && snake.dy === 0) {
+    snake.dy = grid;
+    snake.dx = 0;
+  }
+});
+
+// start the game
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
+ADD OWN SOLUTION
+
+Log in, to leave a c
+run script
+
+<complie script.html>
+
